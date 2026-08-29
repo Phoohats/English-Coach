@@ -1,0 +1,214 @@
+{
+  "id": "a1-u01-l01-hello",
+  "version": "0.1.0",
+  "status": "draft",
+  "level": "A1",
+  "unit_id": "a1-u01-meeting-people",
+  "title": "Hello, I'm Mai",
+  "duration_minutes": 15,
+  "skill_weights": {
+    "listening": 20,
+    "speaking": 40,
+    "reading": 15,
+    "writing": 10,
+    "review": 15
+  },
+  "objectives": [
+    {
+      "id": "obj-introduce-self",
+      "version": "0.1.0",
+      "can_do": "I can say my name and ask another person's name.",
+      "competency": "speaking.social-introduction",
+      "mastery_threshold": 70
+    },
+    {
+      "id": "obj-understand-name",
+      "version": "0.1.0",
+      "can_do": "I can understand a person's name in a short introduction.",
+      "competency": "listening.personal-information",
+      "mastery_threshold": 70
+    }
+  ],
+  "language_scope": {
+    "functions": ["greet", "introduce self", "ask a name"],
+    "vocabulary": ["hello", "hi", "name"],
+    "chunks": ["I'm ...", "My name is ...", "What's your name?", "Nice to meet you."],
+    "grammar": ["be: I am", "possessive adjective: your"],
+    "thai_support": "default"
+  },
+  "difficulty_policy": {
+    "calibration_status": "pilot_default",
+    "lower_first_pass_accuracy": 0.6,
+    "upper_first_pass_accuracy": 0.9,
+    "successes_before_fade": 2,
+    "support_steps": ["thai_instruction", "image", "slow_audio", "chunk_model", "transcript"]
+  },
+  "feedback_policy": {
+    "fluency_timing": "after_turn",
+    "accuracy_timing": "after_attempt",
+    "max_focus_points": 2,
+    "priority": ["task", "intelligibility", "target_language", "minor_accuracy"],
+    "retry_required": true
+  },
+  "review_policy": {
+    "scheduler_version": "1.0.0",
+    "calibration_status": "pilot_default",
+    "initial_intervals_minutes": [10, 1440, 4320, 10080, 20160, 43200],
+    "adaptive": true,
+    "retrieval_required": true,
+    "transfer_variant_required": true
+  },
+  "learner_agency": {
+    "choice_points": [
+      {
+        "id": "choose-meeting-context",
+        "prompt": "Choose who you want to meet.",
+        "options": ["new coworker", "new classmate", "new neighbor"]
+      }
+    ],
+    "competence_signal": "I can introduce myself without looking at the model.",
+    "reflection_prompt": "Which introduction phrase felt easiest to say?",
+    "relatedness_options": ["ai_roleplay", "trusted_person_practice"]
+  },
+  "activities": [
+    {
+      "id": "act-scene",
+      "version": "0.1.0",
+      "type": "scene_observe",
+      "primary_skill": "listening",
+      "duration_seconds": 45,
+      "objective_ids": ["obj-understand-name"],
+      "instruction_en": "Look at the picture. Who is meeting for the first time?",
+      "instruction_th": "ดูภาพ ใครกำลังพบกันเป็นครั้งแรก",
+      "content": {
+        "image_alt": "Two coworkers smile and greet each other near an office entrance.",
+        "audio_transcript": "Hello. I'm Mai."
+      },
+      "feedback_mode": "none",
+      "max_attempts": 1
+    },
+    {
+      "id": "act-listen",
+      "version": "0.1.0",
+      "type": "listen_choose",
+      "primary_skill": "listening",
+      "duration_seconds": 120,
+      "objective_ids": ["obj-understand-name"],
+      "instruction_en": "Listen. What is her name?",
+      "instruction_th": "ฟังแล้วเลือกชื่อของผู้พูด",
+      "content": {
+        "audio_transcript": "Hello. I'm Mai.",
+        "choices": ["Mai", "Mina", "May I"],
+        "answer": "Mai"
+      },
+      "feedback_mode": "deterministic",
+      "max_attempts": 2
+    },
+    {
+      "id": "act-speak",
+      "version": "0.1.0",
+      "type": "speak_repeat",
+      "primary_skill": "speaking",
+      "duration_seconds": 180,
+      "objective_ids": ["obj-introduce-self"],
+      "instruction_en": "Say: Hello, I'm [your name].",
+      "instruction_th": "พูดทักทายและใส่ชื่อของคุณ",
+      "content": {
+        "model": "Hello, I'm Mai.",
+        "focus": ["intelligible name", "complete greeting"]
+      },
+      "feedback_mode": "coaching",
+      "max_attempts": 4
+    },
+    {
+      "id": "act-read",
+      "version": "0.1.0",
+      "type": "read_match",
+      "primary_skill": "reading",
+      "duration_seconds": 120,
+      "objective_ids": ["obj-introduce-self"],
+      "instruction_en": "Match each sentence to its purpose.",
+      "instruction_th": "จับคู่ประโยคกับจุดประสงค์",
+      "content": {
+        "pairs": [
+          ["I'm Mai.", "say your name"],
+          ["What's your name?", "ask a name"]
+        ]
+      },
+      "feedback_mode": "deterministic",
+      "max_attempts": 2
+    },
+    {
+      "id": "act-write",
+      "version": "0.1.0",
+      "type": "write_fill",
+      "primary_skill": "writing",
+      "duration_seconds": 90,
+      "objective_ids": ["obj-introduce-self"],
+      "instruction_en": "Complete: Hello, ___ Niran.",
+      "instruction_th": "เติมคำในประโยคแนะนำตัว",
+      "content": {
+        "answer": "I'm",
+        "accepted_answers": ["I'm", "I am"]
+      },
+      "feedback_mode": "deterministic",
+      "max_attempts": 2
+    },
+    {
+      "id": "act-roleplay",
+      "version": "0.1.0",
+      "type": "roleplay",
+      "primary_skill": "speaking",
+      "duration_seconds": 180,
+      "objective_ids": ["obj-introduce-self", "obj-understand-name"],
+      "instruction_en": "Meet a new coworker. Greet them, say your name, and ask their name.",
+      "instruction_th": "จำลองการพบเพื่อนร่วมงานใหม่ ทักทาย แนะนำตัว และถามชื่อ",
+      "content": {
+        "role": "friendly new coworker",
+        "required_functions": ["greet", "introduce self", "ask a name"],
+        "maximum_turns": 4
+      },
+      "feedback_mode": "rubric",
+      "max_attempts": 3
+    },
+    {
+      "id": "act-exit",
+      "version": "0.1.0",
+      "type": "exit_ticket",
+      "primary_skill": "review",
+      "duration_seconds": 90,
+      "objective_ids": ["obj-introduce-self", "obj-understand-name"],
+      "instruction_en": "Record one complete introduction without looking at the model.",
+      "instruction_th": "อัดเสียงแนะนำตัวหนึ่งครั้งโดยไม่ดูตัวอย่าง",
+      "content": {
+        "required_functions": ["greet", "introduce self", "ask a name"]
+      },
+      "feedback_mode": "rubric",
+      "max_attempts": 3
+    }
+  ],
+  "assessment": {
+    "rubric_version": "a1-introduction-1.0",
+    "pass_threshold": 70,
+    "calibration_status": "provisional",
+    "minimum_independent_samples": 2,
+    "delayed_check_required": true,
+    "criteria": [
+      { "id": "task", "description": "Completes the greeting, name, and question functions.", "weight": 50 },
+      { "id": "intelligibility", "description": "The listener can understand the key words and name.", "weight": 30 },
+      { "id": "language", "description": "Uses an approved introduction pattern.", "weight": 20 }
+    ],
+    "retry_policy": "immediate_guided"
+  },
+  "ai_policy": {
+    "prompt_version": "a1-roleplay-0.1",
+    "allowed": ["use approved A1 chunks", "ask one short question at a time", "give Thai coaching after failure"],
+    "forbidden": ["introduce vocabulary outside the lesson", "fail based on accent similarity", "change the rubric"],
+    "fallback": "Use a fixed four-turn coworker dialogue and deterministic function checks."
+  },
+  "accessibility": {
+    "transcripts_required": true,
+    "alt_text_required": true,
+    "non_audio_alternative": "Allow typed introduction and provide the model audio with transcript."
+  }
+}

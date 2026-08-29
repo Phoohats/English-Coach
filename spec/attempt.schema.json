@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://english-career-coach.local/schemas/attempt.schema.json",
+  "title": "English Career Coach Attempt Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "schema_version",
+    "idempotency_key",
+    "user_id",
+    "lesson_ref",
+    "activity_ref",
+    "objective_refs",
+    "rubric_version",
+    "status",
+    "submitted_at"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "schema_version": { "$ref": "#/$defs/semanticVersion" },
+    "idempotency_key": { "type": "string", "minLength": 8, "maxLength": 200 },
+    "user_id": { "type": "string", "minLength": 1 },
+    "lesson_ref": { "$ref": "#/$defs/versionedRef" },
+    "activity_ref": { "$ref": "#/$defs/versionedRef" },
+    "objective_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/versionedRef" }
+    },
+    "rubric_version": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["started", "submitted", "scored", "failed"] },
+    "submitted_at": { "type": "string", "minLength": 1 },
+    "score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "ai_execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "model",
+        "model_version",
+        "prompt_version",
+        "request_id",
+        "fallback_used"
+      ],
+      "properties": {
+        "provider": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 },
+        "model_version": { "type": "string", "minLength": 1 },
+        "prompt_version": { "type": "string", "minLength": 1 },
+        "request_id": { "type": "string", "minLength": 1 },
+        "fallback_used": { "type": "boolean" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "status": { "const": "scored" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "score": { "type": "number", "minimum": 0, "maximum": 100 }
+        },
+        "required": ["score"]
+      }
+    }
+  ],
+  "$defs": {
+    "semanticVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "versionedRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "version": { "$ref": "#/$defs/semanticVersion" }
+      }
+    }
+  }
+}

@@ -1,0 +1,137 @@
+name: Planned change
+description: Run a product or engineering change through the Agent Development Loop.
+title: "[ECC] "
+labels:
+  - state/discovery
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Complete this contract before coding. Keep the issue focused on one observable outcome.
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What observable learner or operator outcome should change?
+      placeholder: A learner can resume one submitted lesson attempt after signing in again.
+    validations:
+      required: true
+  - type: textarea
+    id: non-goals
+    attributes:
+      label: Non-goals
+      description: What is deliberately excluded from this issue?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Risk class
+      options:
+        - P1 critical - auth, cross-user data, destructive migration, secrets, assessment history
+        - P2 high - scoring, progression, AI, audio, persistence, contracts
+        - P3 normal - isolated UI, copy, or internal tooling
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: change-classes
+    attributes:
+      label: Change classes
+      options:
+        - label: Code
+        - label: Lesson content
+        - label: Contract or schema
+        - label: Database, index, or rules
+        - label: Prompt or model
+        - label: Security or privacy
+        - label: Documentation only
+    validations:
+      required: true
+
+  - type: dropdown
+    id: owner-agent
+    attributes:
+      label: Owner Agent
+      options:
+        - Learning Core
+        - UI
+        - Firebase
+        - QA
+        - Security and Privacy
+        - Debug
+        - Integrator and Release
+    validations:
+      required: true
+
+  - type: textarea
+    id: modules
+    attributes:
+      label: Modules and ownership boundaries
+      description: List the exact modules or files the owner may change.
+    validations:
+      required: true
+
+  - type: input
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Blocking issue IDs, or None.
+      placeholder: None
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Write observable pass/fail statements.
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: tests
+    attributes:
+      label: Test matrix
+      description: Cover the risk-appropriate unit, contract, rules, integration, E2E, and accessibility checks.
+      placeholder: |
+        - Unit:
+        - Contract:
+        - Firebase Emulator and rules:
+        - Integration/E2E:
+        - Accessibility/responsive:
+    validations:
+      required: true
+
+  - type: dropdown
+    id: data-impact
+    attributes:
+      label: Data impact
+      options:
+        - None
+        - Additive
+        - Compatible migration
+        - Breaking or destructive
+    validations:
+      required: true
+
+  - type: textarea
+    id: rollout
+    attributes:
+      label: Rollout and health signals
+      description: Describe flags, preview, canary, metrics, and alert thresholds.
+    validations:
+      required: true
+
+  - type: textarea
+    id: rollback
+    attributes:
+      label: Rollback or recovery
+      description: State the tested way to disable, roll back, or recover this change.
+    validations:
+      required: true

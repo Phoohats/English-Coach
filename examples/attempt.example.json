@@ -1,0 +1,36 @@
+{
+  "id": "attempt-demo-001",
+  "schema_version": "1.0.0",
+  "idempotency_key": "demo-user:a1-u01-l01-hello:act-exit:001",
+  "user_id": "demo-user",
+  "lesson_ref": {
+    "id": "a1-u01-l01-hello",
+    "version": "0.1.0"
+  },
+  "activity_ref": {
+    "id": "act-exit",
+    "version": "0.1.0"
+  },
+  "objective_refs": [
+    {
+      "id": "obj-introduce-self",
+      "version": "0.1.0"
+    },
+    {
+      "id": "obj-understand-name",
+      "version": "0.1.0"
+    }
+  ],
+  "rubric_version": "a1-introduction-1.0",
+  "status": "scored",
+  "submitted_at": "2026-08-29T10:00:00.000Z",
+  "score": 82,
+  "ai_execution": {
+    "provider": "mock",
+    "model": "fixed-roleplay",
+    "model_version": "1.0.0",
+    "prompt_version": "a1-roleplay-0.1",
+    "request_id": "mock-request-001",
+    "fallback_used": true
+  }
+}

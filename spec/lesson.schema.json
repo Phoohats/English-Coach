@@ -1,0 +1,283 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://english-career-coach.local/schemas/lesson.schema.json",
+  "title": "English Career Coach Lesson",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "status",
+    "level",
+    "unit_id",
+    "title",
+    "duration_minutes",
+    "skill_weights",
+    "objectives",
+    "language_scope",
+    "difficulty_policy",
+    "feedback_policy",
+    "review_policy",
+    "learner_agency",
+    "activities",
+    "assessment",
+    "ai_policy",
+    "accessibility"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "status": { "enum": ["draft", "reviewed", "published", "retired"] },
+    "level": { "enum": ["A1", "A2", "B1", "B2", "C1"] },
+    "unit_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "duration_minutes": { "type": "integer", "minimum": 5, "maximum": 60 },
+    "skill_weights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["listening", "speaking", "reading", "writing", "review"],
+      "properties": {
+        "listening": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "speaking": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "reading": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "writing": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "review": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "objectives": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "version", "can_do", "competency", "mastery_threshold"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+          "can_do": { "type": "string", "minLength": 1 },
+          "competency": { "type": "string", "minLength": 1 },
+          "mastery_threshold": { "type": "integer", "minimum": 0, "maximum": 100 }
+        }
+      }
+    },
+    "language_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["functions", "vocabulary", "chunks", "grammar", "thai_support"],
+      "properties": {
+        "functions": { "type": "array", "items": { "type": "string" } },
+        "vocabulary": { "type": "array", "items": { "type": "string" } },
+        "chunks": { "type": "array", "items": { "type": "string" } },
+        "grammar": { "type": "array", "items": { "type": "string" } },
+        "thai_support": { "enum": ["default", "optional", "on_request", "none"] }
+      }
+    },
+    "difficulty_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "calibration_status",
+        "lower_first_pass_accuracy",
+        "upper_first_pass_accuracy",
+        "successes_before_fade",
+        "support_steps"
+      ],
+      "properties": {
+        "calibration_status": { "enum": ["pilot_default", "calibrated"] },
+        "lower_first_pass_accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "upper_first_pass_accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "successes_before_fade": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "support_steps": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "feedback_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fluency_timing", "accuracy_timing", "max_focus_points", "priority", "retry_required"],
+      "properties": {
+        "fluency_timing": { "const": "after_turn" },
+        "accuracy_timing": { "const": "after_attempt" },
+        "max_focus_points": { "type": "integer", "minimum": 1, "maximum": 2 },
+        "priority": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": { "enum": ["task", "intelligibility", "target_language", "minor_accuracy"] }
+        },
+        "retry_required": { "type": "boolean" }
+      }
+    },
+    "review_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scheduler_version",
+        "calibration_status",
+        "initial_intervals_minutes",
+        "adaptive",
+        "retrieval_required",
+        "transfer_variant_required"
+      ],
+      "properties": {
+        "scheduler_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "calibration_status": { "enum": ["pilot_default", "calibrated"] },
+        "initial_intervals_minutes": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": { "type": "integer", "minimum": 1 }
+        },
+        "adaptive": { "const": true },
+        "retrieval_required": { "const": true },
+        "transfer_variant_required": { "const": true }
+      }
+    },
+    "learner_agency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["choice_points", "competence_signal", "reflection_prompt", "relatedness_options"],
+      "properties": {
+        "choice_points": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "prompt", "options"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "prompt": { "type": "string", "minLength": 1 },
+              "options": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 5,
+                "uniqueItems": true,
+                "items": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        },
+        "competence_signal": { "type": "string", "minLength": 1 },
+        "reflection_prompt": { "type": "string", "minLength": 1 },
+        "relatedness_options": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["ai_roleplay", "trusted_person_practice", "peer_practice", "mentor_feedback"] }
+        }
+      }
+    },
+    "activities": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "version",
+          "type",
+          "primary_skill",
+          "duration_seconds",
+          "objective_ids",
+          "instruction_en",
+          "content",
+          "feedback_mode",
+          "max_attempts"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+          "type": {
+            "enum": [
+              "scene_observe",
+              "listen_choose",
+              "listen_order",
+              "speak_repeat",
+              "speak_response",
+              "read_match",
+              "read_infer",
+              "write_fill",
+              "write_response",
+              "mediate_information",
+              "roleplay",
+              "review_recall",
+              "exit_ticket"
+            ]
+          },
+          "primary_skill": { "enum": ["listening", "speaking", "reading", "writing", "review"] },
+          "duration_seconds": { "type": "integer", "minimum": 10, "maximum": 900 },
+          "objective_ids": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "instruction_en": { "type": "string", "minLength": 1 },
+          "instruction_th": { "type": "string" },
+          "content": { "type": "object" },
+          "feedback_mode": { "enum": ["deterministic", "rubric", "coaching", "none"] },
+          "max_attempts": { "type": "integer", "minimum": 1, "maximum": 10 }
+        }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rubric_version",
+        "pass_threshold",
+        "calibration_status",
+        "minimum_independent_samples",
+        "delayed_check_required",
+        "criteria",
+        "retry_policy"
+      ],
+      "properties": {
+        "rubric_version": { "type": "string", "minLength": 1 },
+        "pass_threshold": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "calibration_status": { "enum": ["provisional", "piloted", "calibrated"] },
+        "minimum_independent_samples": { "type": "integer", "minimum": 2, "maximum": 10 },
+        "delayed_check_required": { "const": true },
+        "criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "description", "weight"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "description": { "type": "string", "minLength": 1 },
+              "weight": { "type": "integer", "minimum": 1, "maximum": 100 }
+            }
+          }
+        },
+        "retry_policy": { "enum": ["immediate_guided", "after_feedback", "scheduled_review"] }
+      }
+    },
+    "ai_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prompt_version", "allowed", "forbidden", "fallback"],
+      "properties": {
+        "prompt_version": { "type": "string", "minLength": 1 },
+        "allowed": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "forbidden": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "fallback": { "type": "string", "minLength": 1 }
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transcripts_required", "alt_text_required", "non_audio_alternative"],
+      "properties": {
+        "transcripts_required": { "type": "boolean" },
+        "alt_text_required": { "type": "boolean" },
+        "non_audio_alternative": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

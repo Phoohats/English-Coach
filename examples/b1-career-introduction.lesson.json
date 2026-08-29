@@ -1,0 +1,222 @@
+{
+  "id": "b1-career-u01-l01-professional-introduction",
+  "version": "0.1.0",
+  "status": "draft",
+  "level": "B1",
+  "unit_id": "b1-career-u01-career-story",
+  "title": "Tell Me About Yourself",
+  "duration_minutes": 25,
+  "skill_weights": {
+    "listening": 15,
+    "speaking": 35,
+    "reading": 15,
+    "writing": 25,
+    "review": 10
+  },
+  "objectives": [
+    {
+      "id": "obj-structure-introduction",
+      "version": "0.1.0",
+      "can_do": "I can give a relevant 60-90 second professional introduction.",
+      "competency": "career.interview-professional-introduction",
+      "mastery_threshold": 75
+    },
+    {
+      "id": "obj-identify-relevance",
+      "version": "0.1.0",
+      "can_do": "I can identify which experience is relevant to a target role.",
+      "competency": "career.audience-relevance",
+      "mastery_threshold": 75
+    }
+  ],
+  "language_scope": {
+    "functions": ["summarize experience", "connect evidence to a role", "state a career goal"],
+    "vocabulary": ["experience", "responsible for", "project", "result", "role", "strength"],
+    "chunks": ["I currently work as ...", "One result I'm proud of is ...", "I'm interested in this role because ..."],
+    "grammar": ["present simple for current role", "past simple for achievements", "because for reasons"],
+    "thai_support": "optional"
+  },
+  "difficulty_policy": {
+    "calibration_status": "pilot_default",
+    "lower_first_pass_accuracy": 0.6,
+    "upper_first_pass_accuracy": 0.9,
+    "successes_before_fade": 2,
+    "support_steps": ["thai_explanation", "model_answer", "outline", "key_chunks", "transcript"]
+  },
+  "feedback_policy": {
+    "fluency_timing": "after_turn",
+    "accuracy_timing": "after_attempt",
+    "max_focus_points": 2,
+    "priority": ["task", "intelligibility", "target_language", "minor_accuracy"],
+    "retry_required": true
+  },
+  "review_policy": {
+    "scheduler_version": "1.0.0",
+    "calibration_status": "pilot_default",
+    "initial_intervals_minutes": [10, 1440, 4320, 10080, 20160, 43200],
+    "adaptive": true,
+    "retrieval_required": true,
+    "transfer_variant_required": true
+  },
+  "learner_agency": {
+    "choice_points": [
+      {
+        "id": "choose-target-role",
+        "prompt": "Choose the role and interviewer perspective for your answer.",
+        "options": ["project engineer hiring manager", "technical lead", "HR interviewer"]
+      }
+    ],
+    "competence_signal": "I can give a relevant professional introduction and handle a follow-up without notes.",
+    "reflection_prompt": "Which evidence made your answer more credible?",
+    "relatedness_options": ["ai_roleplay", "trusted_person_practice", "mentor_feedback"]
+  },
+  "activities": [
+    {
+      "id": "act-listen-model",
+      "version": "0.1.0",
+      "type": "listen_order",
+      "primary_skill": "listening",
+      "duration_seconds": 210,
+      "objective_ids": ["obj-structure-introduction"],
+      "instruction_en": "Listen and order the introduction: present role, evidence, target role.",
+      "instruction_th": "ฟังแล้วเรียงส่วนของคำตอบ: งานปัจจุบัน ผลงาน และงานเป้าหมาย",
+      "content": {
+        "audio_transcript": "I currently work as a site engineer. I coordinate subcontractors and check progress against drawings. One result I'm proud of is reducing rework on my last project. I'm now looking for a role where I can take more responsibility for project delivery.",
+        "answer_order": ["present role", "evidence", "target role"]
+      },
+      "feedback_mode": "deterministic",
+      "max_attempts": 2
+    },
+    {
+      "id": "act-read-compare",
+      "version": "0.1.0",
+      "type": "read_infer",
+      "primary_skill": "reading",
+      "duration_seconds": 210,
+      "objective_ids": ["obj-identify-relevance"],
+      "instruction_en": "Choose the introduction that is more relevant to a project-engineer interview and explain why.",
+      "instruction_th": "เลือกคำตอบที่เกี่ยวข้องกับตำแหน่งวิศวกรโครงการมากกว่าและอธิบายเหตุผล",
+      "content": {
+        "options": [
+          "I enjoy many hobbies and I studied engineering.",
+          "I coordinate site work and recently reduced drawing-related rework by improving the checking process."
+        ],
+        "preferred_option": 2,
+        "evidence": ["relevant responsibility", "specific result"]
+      },
+      "feedback_mode": "rubric",
+      "max_attempts": 2
+    },
+    {
+      "id": "act-write-outline",
+      "version": "0.1.0",
+      "type": "write_response",
+      "primary_skill": "writing",
+      "duration_seconds": 300,
+      "objective_ids": ["obj-structure-introduction", "obj-identify-relevance"],
+      "instruction_en": "Write three notes: your current value, one piece of evidence, and why the target role fits.",
+      "instruction_th": "เขียนโน้ตสามส่วน: คุณค่าปัจจุบัน หลักฐานหนึ่งเรื่อง และเหตุผลที่เหมาะกับตำแหน่ง",
+      "content": {
+        "required_sections": ["current value", "evidence", "target fit"],
+        "maximum_words": 120
+      },
+      "feedback_mode": "coaching",
+      "max_attempts": 3
+    },
+    {
+      "id": "act-first-answer",
+      "version": "0.1.0",
+      "type": "speak_response",
+      "primary_skill": "speaking",
+      "duration_seconds": 240,
+      "objective_ids": ["obj-structure-introduction"],
+      "instruction_en": "Answer 'Tell me about yourself' in 60-90 seconds using your notes.",
+      "instruction_th": "ตอบคำถาม Tell me about yourself ภายใน 60-90 วินาทีโดยใช้โน้ต",
+      "content": {
+        "minimum_seconds": 45,
+        "maximum_seconds": 105,
+        "required_sections": ["current value", "evidence", "target fit"]
+      },
+      "feedback_mode": "rubric",
+      "max_attempts": 3
+    },
+    {
+      "id": "act-follow-up",
+      "version": "0.1.0",
+      "type": "roleplay",
+      "primary_skill": "speaking",
+      "duration_seconds": 300,
+      "objective_ids": ["obj-structure-introduction", "obj-identify-relevance"],
+      "instruction_en": "Answer the interviewer's follow-up questions without reading your original answer.",
+      "instruction_th": "ตอบคำถามต่อเนื่องของผู้สัมภาษณ์โดยไม่อ่านคำตอบเดิม",
+      "content": {
+        "role": "supportive hiring manager",
+        "follow_up_topics": ["specific responsibility", "measurable result", "reason for change"],
+        "maximum_turns": 6
+      },
+      "feedback_mode": "rubric",
+      "max_attempts": 2
+    },
+    {
+      "id": "act-improve",
+      "version": "0.1.0",
+      "type": "mediate_information",
+      "primary_skill": "writing",
+      "duration_seconds": 180,
+      "objective_ids": ["obj-structure-introduction"],
+      "instruction_en": "Use your notes and feedback to write a concise version for the hiring manager.",
+      "instruction_th": "ใช้โน้ตและ feedback สรุปคำตอบที่กระชับสำหรับ hiring manager",
+      "content": {
+        "source": "The learner's outline, first answer, and approved feedback from this lesson.",
+        "audience": "hiring manager for the selected role",
+        "required_points": ["current value", "specific evidence", "target fit"],
+        "maximum_words": 80,
+        "preserve_learner_meaning": true
+      },
+      "feedback_mode": "coaching",
+      "max_attempts": 3
+    },
+    {
+      "id": "act-exit",
+      "version": "0.1.0",
+      "type": "exit_ticket",
+      "primary_skill": "review",
+      "duration_seconds": 180,
+      "objective_ids": ["obj-structure-introduction", "obj-identify-relevance"],
+      "instruction_en": "Give one final 60-90 second answer without notes.",
+      "instruction_th": "ตอบรอบสุดท้าย 60-90 วินาทีโดยไม่ใช้โน้ต",
+      "content": {
+        "required_sections": ["current value", "evidence", "target fit"],
+        "save_to_answer_bank": true
+      },
+      "feedback_mode": "rubric",
+      "max_attempts": 2
+    }
+  ],
+  "assessment": {
+    "rubric_version": "career-introduction-1.0",
+    "pass_threshold": 75,
+    "calibration_status": "provisional",
+    "minimum_independent_samples": 2,
+    "delayed_check_required": true,
+    "criteria": [
+      { "id": "relevance", "description": "The answer addresses the target role and avoids unrelated biography.", "weight": 30 },
+      { "id": "evidence", "description": "The answer supports value with a specific responsibility or result.", "weight": 25 },
+      { "id": "organization", "description": "The answer has a clear present-evidence-future structure.", "weight": 20 },
+      { "id": "language", "description": "Grammar and vocabulary communicate the intended meaning accurately enough.", "weight": 15 },
+      { "id": "delivery", "description": "Speech is intelligible and sufficiently fluent for an interview.", "weight": 10 }
+    ],
+    "retry_policy": "after_feedback"
+  },
+  "ai_policy": {
+    "prompt_version": "b1-career-roleplay-0.1",
+    "allowed": ["ask follow-ups from approved topics", "score with rubric evidence", "suggest a clearer answer preserving facts"],
+    "forbidden": ["invent learner achievements", "reward grammar when the answer is irrelevant", "change the rubric", "infer protected traits"],
+    "fallback": "Use three fixed follow-up questions and save the recording for later rubric scoring."
+  },
+  "accessibility": {
+    "transcripts_required": true,
+    "alt_text_required": true,
+    "non_audio_alternative": "Allow typed interview responses and provide transcripts for every model answer."
+  }
+}
