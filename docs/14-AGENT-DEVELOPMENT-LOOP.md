@@ -181,7 +181,8 @@ Any uncertainty about ownership, privacy, scoring, or migration promotes the iss
 ### Branch and pull request policy
 
 - Protect `main`; disallow direct pushes, force pushes, and deletion.
-- Require pull requests, at least one human approval, resolved conversations, and current required checks.
+- Require pull requests, resolved conversations, and current required checks.
+- Require at least one human approval when an independent reviewer identity exists. In solo-owner mode, keep the approval count at zero to avoid deadlock, retain every other protection, and require the owner to perform the final merge action.
 - Dismiss stale approvals when contracts, rules, migrations, scoring, or privacy-sensitive files change.
 - Use small branches named `codex/<issue-id>-<short-name>`.
 - A pull request declares user impact, change class, contract/data effects, screenshots, tests, rollout, and rollback.
@@ -264,6 +265,17 @@ An issue is `DONE` only when:
 
 Estimates are planning ranges, not delivery promises. Each phase is split into issues that should normally complete within one to three working days.
 
+## Verified execution baseline
+
+As of 2026-08-30:
+
+- Baseline commit `12532d0` is pushed to `Phoohats/English-Coach`.
+- GitHub Actions run `33261970155` completed successfully with the `verify` check.
+- Protected `main` requires pull requests, the current `verify` check, an up-to-date branch, and resolved conversations.
+- Administrator bypass, force pushes, and branch deletion are disabled.
+- Required approval is deferred only until an independent reviewer account exists; this avoids making a single-owner repository impossible to merge.
+- ECC-001 is the first P3 issue exercising the complete protected pull-request loop.
+
 ## First execution sequence
 
 1. Review the complete uncommitted repository and create the initial baseline commit.
@@ -284,7 +296,7 @@ Estimates are planning ranges, not delivery promises. Each phase is split into i
 | Development completeness | 9.8/10 | covers plan, review, code, debug, test, release, observation, and update |
 | GitHub/Firebase safety | 9.6/10 | protected main, emulator, staging previews, rules tests, secrets, canary and rollback |
 | Multi-Agent coordination | 9.6/10 | one owner, explicit state machine, independent approvals, parallel boundaries |
-| Current execution readiness | 7.0/10 | repository has no baseline commit, remote protection, Firebase projects, emulator tests, or live preview yet |
+| Current execution readiness | 9.6/10 for Phase 0 | baseline, remote CI, and protected `main` are verified; Firebase projects, emulator tests, and live preview remain Phase 2 gates |
 
 The plan itself rates **9.7/10**. The product does not inherit that rating until Phase 0-2 evidence exists; readiness must be raised by implementation and verification rather than documentation alone.
 
