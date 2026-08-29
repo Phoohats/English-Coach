@@ -32,16 +32,16 @@ Every pull request declares one or more change classes.
 6. Promote gradually or disable the flag and roll back the application.
 7. Run contract cleanup in a later release only after old usage reaches zero.
 
-## Branch protection required on GitHub
+## Verified GitHub branch protection
 
-- Disallow direct pushes to `main`.
-- Require pull requests and at least one review.
-- Require `Quality gates / verify`.
-- Require conversation resolution.
-- Block force pushes and branch deletion.
-- Dismiss stale approvals after contract or migration changes.
+- `main` requires changes to arrive through a pull request.
+- The GitHub Actions `verify` check is required and the branch must be current before merge.
+- Pull-request conversations must be resolved.
+- Administrators cannot bypass the protection.
+- Force pushes and branch deletion are disabled.
+- Required approvals are temporarily disabled in solo-owner mode because a pull-request author cannot approve their own work. Enable one approval and stale-approval dismissal as soon as an independent reviewer account is available.
 
-These settings require live verification after the repository is pushed to GitHub.
+The rule was live-verified on 2026-08-30 against `Phoohats/English-Coach`. Until an independent reviewer exists, the human owner remains the final merge gate and Agents must not merge their own pull requests.
 
 ## AI release gate
 

@@ -113,7 +113,7 @@ body:
     attributes:
       label: Data impact
       options:
-        - None
+        - No data impact
         - Additive
         - Compatible migration
         - Breaking or destructive
