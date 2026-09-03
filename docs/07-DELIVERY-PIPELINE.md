@@ -18,9 +18,10 @@ Every pull request declares one or more change classes.
 2. State user impact, affected contracts, risk class, and rollback plan.
 3. Add or update a regression test before changing behavior.
 4. Run `npm run verify` locally, including coverage thresholds.
-5. Open a pull request and require the `Quality gates / verify` check.
-6. Require review for contracts, migrations, privacy, or scoring changes.
-7. Merge only when the branch is current with `main` and every required check passes.
+5. For Firebase changes, also run `npm run test:firebase`, `npm run test:firebase:lifecycle`, and `npm run audit:security`.
+6. Open a pull request and require `Quality gates / verify`, which aggregates core quality, Firebase emulator, security audit, and pull-request dependency review jobs.
+7. Require review for contracts, migrations, privacy, or scoring changes.
+8. Merge only when the branch is current with `main` and every required check passes.
 
 ## Release flow
 
@@ -35,7 +36,7 @@ Every pull request declares one or more change classes.
 ## Verified GitHub branch protection
 
 - `main` requires changes to arrive through a pull request.
-- The GitHub Actions `verify` check is required and the branch must be current before merge.
+- The GitHub Actions `verify` check is required, aggregates every quality job fail-closed, and the branch must be current before merge.
 - Pull-request conversations must be resolved.
 - Administrators cannot bypass the protection.
 - Force pushes and branch deletion are disabled.
