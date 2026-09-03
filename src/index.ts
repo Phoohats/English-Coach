@@ -1,5 +1,7 @@
 export * from "./ai/provider.js";
+export * from "./application/ports/learner-profile-repository.js";
 export * from "./contracts/attempt.js";
+export * from "./contracts/learner-profile.js";
 export * from "./contracts/lesson.js";
 export * from "./core/difficulty-controller.js";
 export * from "./core/feedback-policy.js";

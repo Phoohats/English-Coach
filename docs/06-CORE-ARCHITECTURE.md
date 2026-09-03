@@ -12,9 +12,9 @@ The core is a TypeScript modular monolith. It owns contracts and policies that m
 | validation | JSON Schema and cross-field rules | business side effects |
 | feature flags | fail-closed release switches | remote flag vendor logic |
 | AI boundary | provider interface and fallback behavior | Gemini credentials or network calls |
-| database policy | compatible migration rules | a database provider before one is selected |
+| persistence policy | compatible migration and ownership rules | Firebase SDK or storage implementation details |
 
-Dependencies point inward: future applications may import core modules, while core modules may not import frontend, database, or provider implementations.
+Dependencies point inward: applications may import core modules, while core, contracts, and application ports may not import React, Firebase, browser, or provider implementations. Firebase SDK usage is confined to adapters and bootstrap code.
 
 ## Stability rules
 
@@ -25,13 +25,21 @@ Dependencies point inward: future applications may import core modules, while co
 - Contract validation occurs before content publication and before attempt persistence.
 - Breaking contract changes require a new schema major version and a compatibility reader during migration.
 
-## Deferred adapters
+## Selected adapter boundary
+
+Firebase is the selected persistence and authentication platform for the modular monolith. Firestore stores structured, versioned records; Cloud Storage stores media bytes; Authentication supplies user identity; and Functions v2 owns privileged or external-provider operations.
+
+Provider-neutral contracts use ordinary TypeScript values such as ISO-8601 timestamps. Firebase adapters alone convert those values to and from provider types such as Firestore `Timestamp` and server timestamp sentinels. The Local Emulator Suite and a `demo-` project ID are mandatory before any remote project is connected.
+
+Learner IDs remain opaque in the shared contract and contain 1-128 UTF-16 code units, matching the enforceable Firestore Rules length boundary. Because `/` is a Firestore document-path concern rather than a domain invariant, only the Firebase adapter rejects it before constructing a document reference. Provider adapters use dedicated entry points under `src/adapters/` and are not exported by the core barrel.
+
+## Deferred product adapters
 
 - Web/PWA lesson player.
-- Authentication and user ownership.
-- PostgreSQL repository.
-- Object storage for audio and images.
+- Production Firebase project bootstrap and remote authentication.
+- Firestore repositories beyond the learner-profile vertical slice.
+- Cloud Storage upload flows for audio and images.
 - Gemini provider implementation.
 - Analytics and remote feature-flag provider.
 
-These adapters are intentionally absent so the core can be tested without network, credentials, or infrastructure.
+These adapters remain outside the core so learning policy can be tested without network, credentials, or infrastructure.

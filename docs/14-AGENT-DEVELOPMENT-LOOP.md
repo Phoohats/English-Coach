@@ -307,5 +307,5 @@ The plan itself rates **9.7/10**. The product does not inherit that rating until
 - [Firebase Hosting GitHub integration](https://firebase.google.com/docs/hosting/github-integration)
 - [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulator-suite)
 - [Firestore Security Rules testing](https://firebase.google.com/docs/firestore/security/test-rules-emulator)
-- [Manage and deploy Firebase Security Rules](https://firebase.google.com/docs/rules/manage-deploy)
+- [Security Rules management](https://firebase.google.com/docs/rules)
 - [Cloud Functions configuration and secrets](https://firebase.google.com/docs/functions/config-env)

@@ -1,0 +1,8 @@
+{
+  "name": "english-career-coach-node22-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "node": "22.23.2"
+  }
+}

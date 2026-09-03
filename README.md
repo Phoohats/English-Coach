@@ -4,7 +4,7 @@ Planning workspace for an adaptive English-learning product covering CEFR A1-C1.
 
 ## Current status
 
-**Core foundation plus interactive UI prototype.** The repository contains versioned contracts, deterministic validation, feature flags, a mocked AI boundary, regression tests, CI quality gates, and six responsive learning views.
+**Core foundation plus interactive UI prototype.** The repository contains versioned contracts, deterministic validation, feature flags, a mocked AI boundary, local-only Firebase emulators, regression tests, CI quality gates, and six responsive learning views.
 
 ## Product direction
 
@@ -29,6 +29,7 @@ Planning workspace for an adaptive English-learning product covering CEFR A1-C1.
 - `docs/12-UI-PROTOTYPE-REVIEW.md` - six-view UX mapping, interaction coverage, and responsive review.
 - `docs/13-DESIGN-DECISION.md` - selected Quiet Editorial direction and application rules.
 - `docs/14-AGENT-DEVELOPMENT-LOOP.md` - multi-Agent planning, review, coding, debugging, testing, Firebase, and release loop.
+- `docs/15-ECC-002-FIREBASE-FOUNDATION.md` - local Firebase runtime, security boundaries, verification, and rollback.
 - `spec/lesson.schema.json` - machine-readable lesson contract.
 - `spec/attempt.schema.json` - version-pinned attempt envelope.
 - `examples/a1-introduction.lesson.json` - beginner lesson vertical slice.
@@ -50,7 +51,20 @@ npm install
 npm run verify
 ```
 
-`npm run verify` runs lint, strict TypeScript checks, regression tests with coverage thresholds, and validation of every example contract. Risky features remain disabled by default, and no real AI or database connection is present.
+`npm run verify` runs repository security checks, lint, strict TypeScript checks, regression tests with coverage thresholds, contract validation, dependency audit, and a production build. Risky features remain disabled by default; Firebase access is emulator-only and no real AI connection is present.
+
+## Firebase emulator verification
+
+Install the pinned Node 22 runtime and Functions dependencies after the root install:
+
+```bash
+npm --prefix tools/node22 ci
+npm run install:functions
+npm run test:firebase
+npm run test:firebase:lifecycle
+```
+
+Java 21 is required by the Firestore emulator. These commands use only the `demo-english-career-coach` project and loopback addresses.
 
 ## UI prototype
 

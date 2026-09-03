@@ -1,0 +1,70 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function hasExactProfileKeys() {
+      return request.resource.data.keys().hasAll([
+        'schemaVersion',
+        'userId',
+        'displayName',
+        'currentLevel',
+        'createdAt',
+        'updatedAt'
+      ]) && request.resource.data.keys().hasOnly([
+        'schemaVersion',
+        'userId',
+        'displayName',
+        'currentLevel',
+        'createdAt',
+        'updatedAt'
+      ]);
+    }
+
+    function hasValidProfileValues(uid) {
+      return request.resource.data.schemaVersion is int
+        && request.resource.data.schemaVersion == 1
+        && request.resource.data.userId is string
+        && request.resource.data.userId.size() >= 1
+        && request.resource.data.userId.size() <= 128
+        && request.resource.data.userId == uid
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() >= 1
+        && request.resource.data.displayName.size() <= 80
+        && request.resource.data.currentLevel is string
+        && request.resource.data.currentLevel in ['A1', 'A2', 'B1', 'B2', 'C1']
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.updatedAt is timestamp;
+    }
+
+    function isValidProfile(uid) {
+      return hasExactProfileKeys() && hasValidProfileValues(uid);
+    }
+
+    function immutableFieldsAreUnchanged() {
+      return request.resource.data.schemaVersion == resource.data.schemaVersion
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.createdAt == resource.data.createdAt;
+    }
+
+    match /learnerProfiles/{uid} {
+      allow create: if isOwner(uid)
+        && isValidProfile(uid)
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+      allow get: if isOwner(uid);
+      allow update: if isOwner(uid)
+        && isValidProfile(uid)
+        && immutableFieldsAreUnchanged()
+        && request.resource.data.updatedAt == request.time;
+      allow list, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
