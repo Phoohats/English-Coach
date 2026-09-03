@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -11,6 +11,7 @@ const utf16DeployPath = join(canaryDirectory, "deploy.ps1");
 const extensionlessDeployPath = join(canaryDirectory, "deploy-script");
 const pythonDeployPath = join(canaryDirectory, "deploy.py");
 const utf16CredentialPath = join(canaryDirectory, "credential.ps1");
+const invalidWorkflowPath = join(canaryDirectory, ".github", "workflows", "invalid-workflow.yml");
 
 function utf16LeWithBom(content) {
   return Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from(content, "utf16le")]);
@@ -45,10 +46,20 @@ try {
   writeFileSync(extensionlessDeployPath, deployCommand, "utf8");
   writeFileSync(pythonDeployPath, deployCommand, "utf8");
   writeFileSync(utf16CredentialPath, utf16LeWithBom(awsCredential));
+  mkdirSync(join(canaryDirectory, ".github", "workflows"), { recursive: true });
+  writeFileSync(
+    invalidWorkflowPath,
+    [
+      "jobs:\n  quality:\n    runs-on: ubuntu-latest\n    env:\n      CLOUDSDK_CONFIG: $",
+      "{{ runner.temp }}",
+      "/ecc-cloudsdk\n    steps: []\n",
+    ].join(""),
+    "utf8",
+  );
 
   assertRejected(
     runScanner("scripts/check-repository-policy.mjs"),
-    [utf16DeployPath, extensionlessDeployPath, pythonDeployPath],
+    [utf16DeployPath, extensionlessDeployPath, pythonDeployPath, invalidWorkflowPath],
     "Repository policy scanner",
   );
   assertRejected(
