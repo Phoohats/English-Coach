@@ -1,6 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
-import { parse as parseYaml } from "yaml";
 import {
   decodeRepositoryText,
   filesBelow,
@@ -64,25 +63,11 @@ function containsForbiddenCommand(content) {
   return commands.filter(({ pattern }) => pattern.test(content)).map(({ name }) => name);
 }
 
-function unsupportedJobEnvironmentContexts(content, projectPath) {
+function unsupportedWorkflowRunnerContexts(content, projectPath) {
   if (!/^\.github\/workflows\/[^/]+\.ya?ml$/i.test(projectPath)) return [];
-
-  let workflow;
-  try {
-    workflow = parseYaml(content);
-  } catch (error) {
-    return [`invalid workflow YAML: ${error instanceof Error ? error.message : String(error)}`];
-  }
-
-  const findings = [];
-  for (const [jobName, job] of Object.entries(workflow?.jobs ?? {})) {
-    for (const [environmentName, value] of Object.entries(job?.env ?? {})) {
-      if (/\$\{\{\s*runner\./i.test(String(value))) {
-        findings.push(`${jobName}.env.${environmentName} uses runner context before a runner exists`);
-      }
-    }
-  }
-  return findings;
+  return /\$\{\{\s*runner\./i.test(content)
+    ? ["runner context is prohibited by the dependency-free workflow policy"]
+    : [];
 }
 
 for (const canary of [
@@ -104,7 +89,7 @@ for (const canary of [
 }
 
 if (
-  unsupportedJobEnvironmentContexts(
+  unsupportedWorkflowRunnerContexts(
     "jobs:\n  quality:\n    env:\n      CLOUDSDK_CONFIG: ${{ runner.temp }}/ecc-cloudsdk\n",
     ".github/workflows/canary.yml",
   ).length === 0
@@ -153,9 +138,9 @@ for (const path of filesBelow(scanRoot, scanRoot)) {
   for (const command of containsForbiddenCommand(content)) {
     findings.push(`${projectPath}: forbidden command ${command}`);
   }
-  for (const workflowFinding of unsupportedJobEnvironmentContexts(content, projectPath)) {
+  for (const workflowFinding of unsupportedWorkflowRunnerContexts(content, projectPath)) {
     findings.push(
-      `${projectPath}: ${workflowFinding}; use a runner-local absolute path in job-level env`,
+      `${projectPath}: ${workflowFinding}; use a runner-local absolute path`,
     );
   }
 }
